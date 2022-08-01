@@ -1,0 +1,166 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="task_type_edit_inherit">
+            <field name="name">project.task.type.inherit</field>
+            <field name="model">project.task.type</field>
+            <field name="inherit_id" ref="project.task_type_edit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='auto_validation_kanban_state']" position="after">
+                    <field name="stage_type"/>
+                    <field name="is_default_design_stage" />
+                    <field name="is_default_printing_stage" />
+                    <field name="send_notification"/>
+                    <field name="is_erp_stage"/>
+                    <field name="is_web_stage"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="inherit_view_task_kanban" model="ir.ui.view">
+            <field name="name">view.task.kanban.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_kanban"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//kanban" position="attributes">
+            		<attribute name="class">o_kanban_small_column o_kanban_project_tasks add_button_large</attribute>
+            	</xpath>
+            	<xpath expr="//kanban/templates[1]/t[1]/div[1]" position="attributes">
+            		<attribute name="style">pointer-events: auto;</attribute>
+            	</xpath>
+            	<xpath expr="//kanban/templates[1]/t[1]/div[1]" position="attributes">
+            		<attribute name="style">pointer-events: auto;</attribute>
+            		<attribute name="t-attf-class">{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) : ''}} oe_kanban_card</attribute>
+            	</xpath>
+            	
+            	<xpath expr="//kanban/templates[1]/t[1]/div[1]/div[1]/div[3]/div[2]" position="before">
+                    <a style="margin-right:20px;color: #FFFFFF;background-color: #3482c2;border: solid 2px brown;padding:10px;width:50%; height:20%;" name="open_record"  type="object" class="text-center">Edit</a>
+            		<!-- 
+            			<button style="pointer-events:auto|none; position:absolute; width:100%; height:40%; background:none; border:none;" title="open" type="object" name="open_record"></button>
+            		 -->
+            	</xpath>
+            	 
+            </field>
+        </record>
+
+        <!-- <record id="inherit_view_task_form4" model="ir.ui.view">
+            <field name="name">view.task.form4.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="mode">primary</field>
+            <field eval="100" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_assign']" position="before">
+                    <field name="print_manager_id"/>
+                </xpath>
+                <xpath expr="//field[@name='date_last_stage_update']" position="after">
+                    <field name="stage_type"  />
+                    <field name="final_image"  widget="image" class="oe_avatar"/>
+                    <field name="revision_note"  attrs="{'invisible': [('stage_type','!=','revision')]}"/>
+                    <field name="revision_image" attrs="{'invisible': [('stage_type','!=','revision')]}" widget="image" class="oe_avatar"/>
+                </xpath>
+            	<xpath expr="//form/sheet" position="after">
+            		<footer>
+						<button special="save" type="object" string="Save" class="oe_highlight pull-left"/>
+						<button special="cancel" string="Cancel" class="pull-left"/>
+					</footer>
+            	</xpath>
+            	<xpath expr="//notebook/page[@name='extra_info']" position="after">
+            		<page name="atc" string="Attachments">
+            			<group>
+            			<field name="task_image_name" invisible="1"/>
+            			<field name="task_image_atc" filename="task_image_name"/>
+            			</group>
+            			<field name="attachment_ids2">
+						<kanban edit="false" import="false" create="false">
+			                    <field name="id"/>
+			                    <field name="mimetype"/>
+			                    <field name="type"/>
+			                    <field name="create_uid"/>
+			                    <field name="url"/>
+			                    <field name="create_date"/>
+			                    <field name="name"/>
+			                    <templates>
+			                        <t t-name="kanban-box">
+			                            <div class="oe_kanban_global_area o_kanban_attachment">
+			                                
+			                                <div class="o_kanban_image">
+			                                    <div class="o_kanban_image_wrapper">
+			                                        <t t-set="webimage" t-value="new RegExp('image.*(gif|jpeg|jpg|png)').test(record.mimetype.value)"/>
+			                                        <div t-if="record.type.raw_value == 'url'" class="o_url_image fa fa-link fa-3x text-muted" aria-label="Image is a link"/>
+			                                        <img t-elif="webimage" t-attf-src="/web/image/#{record.id.raw_value}" width="100" height="100" alt="Document" class="o_attachment_image"/>
+			                                        <div t-else="!webimage" class="o_image o_image_thumbnail" t-att-data-mimetype="record.mimetype.value"/>
+			                                    </div>
+			                                </div>
+			                                <div class="o_kanban_details">
+			                                    <div class="o_kanban_details_wrapper">
+			                                        <div t-att-title="record.name.raw_value" class="o_kanban_record_title">
+			                                            <field name="name" class="o_text_overflow"/>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+			                        </t>
+			                    </templates>
+			                  </kanban>
+            		    </field>
+            		</page>
+            	</xpath>
+		</field>
+	   </record> -->
+
+        <record model="ir.ui.view" id="project_task_inherit_trello">
+            <field name="name">project.task.form.project.inherit</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='sequence']" position="before">
+                    <field name="project_stage_id"/>
+                </xpath>
+                <xpath expr="//field[@name='date_assign']" position="before">
+                    <field name="print_manager_id"/>
+                </xpath>
+                <xpath expr="//field[@name='date_last_stage_update']" position="after">
+                    <field name="stage_type"  />
+                    <field name="final_image"  widget="image" class="oe_avatar"/>
+                    <field name="revision_note"  attrs="{'invisible': [('stage_type','!=','revision')]}"/>
+                    <field name="revision_image" attrs="{'invisible': [('stage_type','!=','revision')]}" widget="image" class="oe_avatar"/>
+
+                    <field name="approved_logo" widget="image" class="oe_avatar"/>
+
+                </xpath>
+                <xpath expr="//notebook/page[@name='extra_info']" position="after">
+                    <field name="is_web_design" invisible="1"/>
+                    <page name="user_design" string="Design Details" attrs="{'invisible': [('is_web_design', '=', False)]}">
+                        <group>
+                            <group>
+                                <field name="design_product_id" />
+                                <field name="quantity" />
+                            </group>
+                            <group>
+                                <field name="front_image" widget="image" class="oe_avatar"/>
+                                <field name="back_image" widget="image" class="oe_avatar"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page name="design_logos" string="Designed Logos">
+                        <field name="logo_ids">
+                            <tree>
+                                <field name="logo_name"/>
+                                <field name="done_logo" widget="image" class="oe_avatar"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="logo_name" required="1"/>
+                                        <field name="done_logo" widget="image" class="oe_avatar"/>
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+      </data>
+</odoo>

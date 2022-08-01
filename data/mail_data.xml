@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="email_template_assign_task" model="mail.template">
+            <field name="name">Assign new task notification</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="subject">New Task Notification - OFFICE HUDDLE</field>
+            <field name="email_from">${(object.project_id.user_id.email_formatted) | safe}</field>
+            <field name="partner_to">${(object.user_id.partner_id.id or user.email_formatted) | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello ${(object.user_id.name)},
+                        <br/>
+                        The following task has been assigned to you.
+                        <br/>
+                        Project name : ${(object.project_id.name)}
+                        <br/>
+                        Task title : ${(object.name)}
+                        <br/>
+                        Front Design Description : ${(object.front_design_description)}
+                        <br/>
+                        Back Design Description : ${(object.back_design_description)}
+                        <br/>
+                        Special Instruction : ${(object.special_instruction)}
+                        <br/>
+                        Due date : ${(object.date_deadline) or ''}
+                        <br/>
+                        Check task for more information by clicking VIEW TASK button!
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.user_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_work_started" model="mail.template">
+            <field name="name">Work Started : Notification</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="subject">Work stated on your task ${object.name} : OFFICE HUDDLE</field>
+            <field name="email_from">${(object.project_id.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello ${object.partner_id.name},
+                        <br/>
+                        Our team started work on your task. Go to portal and chat us if you have any questions.
+                        We update on portal chat if anything.
+
+                        <br/><br/>
+                        Best regards, Office Huddle
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+	    <record id="email_template_request_design_approve" model="mail.template">
+            <field name="name">Design: Request Approve</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="subject">Design check and approve(Task :- ${object.name})</field>
+            <field name="email_from">${(object.project_id.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello ${object.partner_id.name},
+                        <br/><br/>
+                        Your
+                        Design is ready. Please verify design. Go to portal and approve or give feedback for changes.
+                        <br/><br/>
+                        Do not hesitate to contact us if you have any questions.
+                        <br/>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_design_customer_issue" model="mail.template">
+            <field name="name">Design: Customer Issue</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="subject">Customer issue on task ${object.name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="partner_to">${object.user_id.partner_id.id}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello ${object.user_id.partner_id.name},
+                        <br/><br/>
+                        Your
+                        Design is has issue. Customer post issue so please check and fix it. Open task check revision not and revision image for issue note.
+                        <br/><br/>
+                        Do not hesitate to contact us if you have any questions.
+                        <br/>
+                        Best regards, Office Huddle
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.user_id.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_design_done" model="mail.template">
+            <field name="name">Design: Done Template</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="subject">Mail Sent to customer</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="partner_to">${object.print_manager_id.id}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello,
+                        <br/><br/>
+                        Your
+                        Design is Done
+                        <br/><br/>
+                        Do not hesitate to contact us if you have any questions.
+                        <br/>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_erp_done" model="mail.template">
+            <field name="name">ERP Development Done</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">ERP DONE For ${object.name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${(object.final_report_id.email_formatted or object.final_report_id.partner_id.email_formatted) | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello,
+                        <br/><br/>
+                        Your
+                        ERP is Done
+                        <br/><br/>
+                        Do not hesitate to contact us if you have any questions.
+                        <br/>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_provide_demo" model="mail.template">
+            <field name="name">ERP Provide Final Demo</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">Final demo for your project ${object.name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${object.partner_id.id}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello,
+                        <br/><br/>
+                        Your
+                        ERP is ready we would like to demostrate it
+                        <br/><br/>
+                        Please Tell us you convenient time
+                        <br/>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_recheck_software" model="mail.template">
+            <field name="name">ERP Recheck Software</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">Final demo for your project ${object.name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${(object.functional_person_id.email_formatted or object.functional_person_id.partner_id.email_formatted) | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello,
+                        <br/><br/>
+                        Your
+                        ERP is ready we would like to demostrate it
+                        <br/><br/>
+                        Please Tell us you convenient time
+                        <br/>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_fix_bugs" model="mail.template">
+            <field name="name">ERP Fix Bugs</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">Final demo for your project ${object.name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${(object.user_id.email_formatted or object.user_id.partner_id.email_formatted) | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello,
+                        <br/><br/>
+                        Your
+                        ERP is ready we would like to demostrate it
+                        <br/><br/>
+                        Please Tell us you convenient time
+                        <br/>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_review_requirement" model="mail.template">
+            <field name="name">ERP Review Requirement</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">Final demo for your project ${object.name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${(object.functional_person_id.email_formatted or object.functional_person_id.partner_id.email_formatted) | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello,
+                        <br/><br/>
+                        Your
+                        ERP is ready we would like to demostrate it
+                        <br/><br/>
+                        Please Tell us you convenient time
+                        <br/>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_doc_sent_to_client" model="mail.template">
+            <field name="name">ERP Document Send to Client</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">Document for Project ${object.name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="partner_to">${(object.partner_id.id) | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello ${object.partner_id.name},
+                        <br/><br/>
+                        Please check attached document for our project ${object.name}
+                        <br/><br/>
+                        Thanks and regards<br/>
+                        Office Huddle
+                        <br/>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_default_doc" model="mail.template">
+            <field name="name">ERP Default Documentation</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">Create default document for project : ${object.name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${(object.developer_id.email_formatted or object.developer_id.partner_id.email_formatted) | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello ${object.developer_id.name},
+                        <br/><br/>
+                        Please collect requirement for project ${object.name}.<br/>
+                        Contact ${object.sale_person_id.name} for more detail requirements
+                        <br/><br/>
+                        Thanks and regards<br/>
+                        Office Huddle
+                        <br/>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <record id="email_template_take_requirement" model="mail.template">
+            <field name="name">ERP Take Requirement</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">Take requirement for project : ${object.name}</field>
+            <field name="email_from">${(object.user_id.email_formatted or user.email_formatted) | safe}</field>
+            <field name="email_to">${(object.sale_person_id.email_formatted or object.sale_person_id.partner_id.email_formatted) | safe}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Hello ${object.sale_person_id.name},
+                        <br/><br/>
+                        Please collect requirement for ${object.partner_id.name}. Please check
+                        his project ${object.name}
+                        <br/><br/>
+                        Thanks and regards<br/>
+                        Office Huddle
+                        <br/>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        
+
+    </data>
+</odoo>

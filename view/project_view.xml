@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="project_project_view_form_simplified_inherit" model="ir.ui.view">
+            <field name="name">project.project.view.form.simplified.inherit</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.project_project_view_form_simplified"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="project_type" invisible="context.get('default_is_web_development_project', False) | context.get('default_is_development_project', False)"/>
+                </xpath>
+            </field>
+        </record>
+
+    	<record id="project_trello_inherit_form_view_oh" model="ir.ui.view">
+	        <field name="name">project.project.inherit.design.form.view</field>
+	        <field name="model">project.project</field>
+	        <field name="inherit_id" ref="project.edit_project"/>
+	        <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="functional_person_id"/>
+                    <field name="server_manager_id"/>
+                    <field name="sale_person_id"/>
+                    <field name="developer_id"/>
+                    <field name="final_report_id"/>
+                    <field name="document_id"/>
+                </xpath>
+                
+	            <field name="partner_id" position="before">
+	               <field name="stage_id" attrs="{'invisible': [('is_web_development_project', '=', False), ('is_development_project', '=', False)]}"/>
+                   <field name="project_stage_type" attrs="{'invisible': [('is_web_development_project', '=', False), ('is_development_project', '=', False)]}"/>
+	               <field name="is_development_project" invisible="1"/>
+                   <field name="is_web_development_project" invisible="1"/>
+	            </field>
+                <xpath expr="//header" position="inside">
+                    <button name="move_default_doc" string="Default Documentation" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'take_requirement')]}"/>
+
+                    <button name="move_doc_sent_to_client" string="Document Sent to Client" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'default_doc')]}"/>
+
+                    <button name="move_doc_approval" string="Document APPROVED / DISAPPROVED" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'doc_sent_to_client')]}"/>
+
+                    <button name="move_server_setup_test" string="Setup Test Server" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'doc_approval')]}"/>
+
+                    <button name="move_upload_odoo_apps" string="Upload Odoo Apps" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'server_setup_test')]}"/>
+
+                    <button name="move_demo_to_client" string="Demo Client with Existing Apps" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'upload_odoo_apps')]}"/>
+
+                    <button name="move_development_customization_doc" string="Development/Customization Document" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'demo_to_client')]}"/>
+
+                    <button name="move_setup_network_requirements" string="Setup Network Requirements" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'development_customization_doc')]}"/>
+
+                    <button name="move_setup_server_live" string="Setup Live Server" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'setup_network_requirements')]}"/>
+
+                    <button name="move_start_customization" string="Start Customization" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'setup_server_live')]}"/>
+
+                    <button name="move_code_on_live" string="Setup Code On Live Server" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'start_customization')]}"/>
+
+                    <button name="move_review_verify_req" string="Review/Verify the Requirements On Live Server" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'code_on_live')]}"/>
+
+                    <button name="move_fix_bugs" string="Fix Bugs" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'review_verify_req')]}"/>
+
+                    <button name="move_recheck_software" string="Recheck Software" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'fix_bugs')]}"/>
+
+                    <button name="move_provide_final_demo" string="Provide Final Demo" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'recheck_software')]}"/>
+
+                    <button name="move_erp_finished" string="Erp Finished" type="object" class="oe_highlight" attrs="{'invisible': [('project_stage_type', '!=', 'provide_final_demo')]}"/>
+
+                </xpath>
+	        </field>
+        </record>
+
+        <record id="project.open_view_project_all" model="ir.actions.act_window">
+            <field name="name">Projects</field>
+            <field name="res_model">project.project</field>
+            <field name="domain">[('is_development_project', '=', False), ('is_web_development_project', '=', False)]</field>
+            <field name="view_mode">kanban,form</field>
+            <field name="view_id" ref="project.view_project_kanban"/>
+            <field name="search_view_id" ref="project.view_project_project_filter"/>
+            <field name="target">main</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new project
+                </p><p>
+                    Or <a type="action" name="%(project.ir_actions_server_project_sample)d" tabindex="-1">activate a sample project</a> to play with.
+                </p>
+            </field>
+        </record>
+
+		<record id="erp_project_kanban_view" model="ir.ui.view">
+            <field name="name">erp.project.kanban</field>
+            <field name="model">project.project</field>
+            <field name="arch" type="xml">
+                <kanban class="oe_background_grey o_kanban_dashboard o_project_kanban o_emphasize_colors" on_create="project.open_create_project" create="true" default_group_by="stage_id">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="color"/>
+                    <field name="task_count"/>
+                    <field name="label_tasks"/>
+                    <field name="alias_id"/>
+                    <field name="alias_name"/>
+                    <field name="alias_domain"/>
+                    <field name="is_favorite"/>
+                    <field name="rating_percentage_satisfaction"/>
+                    <field name="rating_status"/>
+                    <field name="analytic_account_id"/>
+                    <field name="stage_id" options='{"group_by_tooltip": {"name": "Description"}}'/>
+                    <field name="project_stage_type"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click o_has_icon">
+                                <div class="o_project_kanban_main">
+                                    <div class="o_kanban_card_content">
+                                        <div class="o_kanban_primary_left">
+                                            <div class="o_primary">
+                                                <span><t t-esc="record.name.value"/></span>
+                                                <span t-if="record.partner_id.value">
+                                                    <strong><t t-esc="record.partner_id.value"/></strong>
+                                                </span>
+                                            </div>
+                                            <div t-if="record.alias_name.value and record.alias_domain.value">
+                                                <span><i class="fa fa-envelope" role="img" aria-label="Domain Alias" title="Domain Alias"></i> <t t-esc="record.alias_id.value"/></span>
+                                            </div>
+                                            <div t-if="record.rating_status.raw_value != 'no'" class="mt8 text-primary" title="Percentage of happy ratings over the past 30 days. Get rating details from the More menu." groups="project.group_project_rating">
+                                                <b>
+                                                    <t t-if="record.rating_percentage_satisfaction.value == -1">
+                                                        <i class="fa fa-smile-o"/> No rating yet
+                                                    </t>
+                                                    <t t-if="record.rating_percentage_satisfaction.value != -1">
+                                                        <a name="action_view_all_rating" type="object" context="{'search_default_rating_last_30_days':1}">
+                                                            <i class="fa fa-smile-o" role="img" aria-label="Percentage of satisfaction" title="Percentage of satisfaction"/> <t t-esc="record.rating_percentage_satisfaction.value"/>%
+                                                        </a>
+                                                    </t>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_card_manage_pane dropdown-menu" groups="project.group_project_manager" role="menu">
+                                        <div class="o_kanban_card_manage_section o_kanban_manage_reports">
+                                            <div role="menuitem">
+                                                <a name="%(portal.portal_share_action)d" type="action">Share</a>
+                                            </div>
+                                            <div role="menuitem">
+                                                <a type="edit">Edit</a>
+                                            </div>
+                                            <div role="menuitem" t-if="record.rating_status.raw_value != 'no'">
+                                                <a name="action_view_all_rating" type="object">Customer Ratings</a>
+                                            </div>
+                                        </div>
+                                        <div role="menuitem" aria-haspopup="true" class="o_no_padding_kanban_colorpicker">
+                                            <ul class="oe_kanban_colorpicker" data-field="color" role="popup"/>
+                                        </div>
+                                    </div>
+                                    <a class="o_kanban_manage_toggle_button o_left" href="#" groups="project.group_project_manager"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                                    <span class="o_right"><field name="is_favorite" widget="boolean_favorite" nolabel="1" force_save="1" /></span>
+                                </div>
+
+                                <div class="o_project_kanban_boxes">
+                                    <a class="o_project_kanban_box" name="%(project.act_project_project_2_project_task_all)d" type="action">
+                                        <div>
+                                            <span class="o_value"><t t-esc="record.task_count.value"/></span>
+                                            <span class="o_label"><t t-esc="record.label_tasks.value"/></span>
+                                        </div>
+                                    </a>
+                                    <a t-if="record.analytic_account_id.raw_value" class="o_project_kanban_box o_project_timesheet_box" name="action_view_account_analytic_line" type="object" groups="analytic.group_analytic_accounting">
+                                        <div>
+                                            <span class="o_label">Profitability</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="act_erp_projects" model="ir.actions.act_window">
+            <field name="name">ERP Projects</field>
+            <field name="res_model">project.project</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{'default_is_development_project': True}</field>
+            <field name="domain">[('is_development_project', '=', True)]</field>
+            <field name="view_id" ref="erp_project_kanban_view"/>
+            <field name="search_view_id" ref="project.view_project_project_filter"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Click <i>Create</i> to start a new ERP Project.
+                </p><p>
+                    To get things done, use activities and status on tasks.<br/>
+                    Chat in real time or by email to collaborate efficiently.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_erp_projects" action="act_erp_projects" name="ERP Projects" parent="project.menu_main_pm"
+            sequence="5"/>
+
+
+
+        <record id="web_project_kanban_view" model="ir.ui.view">
+            <field name="name">web.project.kanban</field>
+            <field name="model">project.project</field>
+            <field name="arch" type="xml">
+                <kanban class="oe_background_grey o_kanban_dashboard o_project_kanban o_emphasize_colors" on_create="project.open_create_project" create="true" default_group_by="stage_id">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="color"/>
+                    <field name="task_count"/>
+                    <field name="label_tasks"/>
+                    <field name="alias_id"/>
+                    <field name="alias_name"/>
+                    <field name="alias_domain"/>
+                    <field name="is_favorite"/>
+                    <field name="rating_percentage_satisfaction"/>
+                    <field name="rating_status"/>
+                    <field name="analytic_account_id"/>
+                    <field name="stage_id" options='{"group_by_tooltip": {"name": "Description"}}'/>
+                    <field name="project_stage_type"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click o_has_icon">
+                                <div class="o_project_kanban_main">
+                                    <div class="o_kanban_card_content">
+                                        <div class="o_kanban_primary_left">
+                                            <div class="o_primary">
+                                                <span><t t-esc="record.name.value"/></span>
+                                                <span t-if="record.partner_id.value">
+                                                    <strong><t t-esc="record.partner_id.value"/></strong>
+                                                </span>
+                                            </div>
+                                            <div t-if="record.alias_name.value and record.alias_domain.value">
+                                                <span><i class="fa fa-envelope" role="img" aria-label="Domain Alias" title="Domain Alias"></i> <t t-esc="record.alias_id.value"/></span>
+                                            </div>
+                                            <div t-if="record.rating_status.raw_value != 'no'" class="mt8 text-primary" title="Percentage of happy ratings over the past 30 days. Get rating details from the More menu." groups="project.group_project_rating">
+                                                <b>
+                                                    <t t-if="record.rating_percentage_satisfaction.value == -1">
+                                                        <i class="fa fa-smile-o"/> No rating yet
+                                                    </t>
+                                                    <t t-if="record.rating_percentage_satisfaction.value != -1">
+                                                        <a name="action_view_all_rating" type="object" context="{'search_default_rating_last_30_days':1}">
+                                                            <i class="fa fa-smile-o" role="img" aria-label="Percentage of satisfaction" title="Percentage of satisfaction"/> <t t-esc="record.rating_percentage_satisfaction.value"/>%
+                                                        </a>
+                                                    </t>
+                                                </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_card_manage_pane dropdown-menu" groups="project.group_project_manager" role="menu">
+                                        <div class="o_kanban_card_manage_section o_kanban_manage_reports">
+                                            <div role="menuitem">
+                                                <a name="%(portal.portal_share_action)d" type="action">Share</a>
+                                            </div>
+                                            <div role="menuitem">
+                                                <a type="edit">Edit</a>
+                                            </div>
+                                            <div role="menuitem" t-if="record.rating_status.raw_value != 'no'">
+                                                <a name="action_view_all_rating" type="object">Customer Ratings</a>
+                                            </div>
+                                        </div>
+                                        <div role="menuitem" aria-haspopup="true" class="o_no_padding_kanban_colorpicker">
+                                            <ul class="oe_kanban_colorpicker" data-field="color" role="popup"/>
+                                        </div>
+                                    </div>
+                                    <a class="o_kanban_manage_toggle_button o_left" href="#" groups="project.group_project_manager"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                                    <span class="o_right"><field name="is_favorite" widget="boolean_favorite" nolabel="1" force_save="1" /></span>
+                                </div>
+
+                                <div class="o_project_kanban_boxes">
+                                    <a class="o_project_kanban_box" name="%(project.act_project_project_2_project_task_all)d" type="action">
+                                        <div>
+                                            <span class="o_value"><t t-esc="record.task_count.value"/></span>
+                                            <span class="o_label"><t t-esc="record.label_tasks.value"/></span>
+                                        </div>
+                                    </a>
+                                    <a t-if="record.analytic_account_id.raw_value" class="o_project_kanban_box o_project_timesheet_box" name="action_view_account_analytic_line" type="object" groups="analytic.group_analytic_accounting">
+                                        <div>
+                                            <span class="o_label">Profitability</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="act_web_projects" model="ir.actions.act_window">
+            <field name="name">Web Development Projects</field>
+            <field name="res_model">project.project</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{'default_is_web_development_project': True}</field>
+            <field name="domain">[('is_web_development_project', '=', True)]</field>
+            <field name="view_id" ref="web_project_kanban_view"/>
+            <field name="search_view_id" ref="project.view_project_project_filter"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Click <i>Create</i> to start a new Web Development Project.
+                </p><p>
+                    To get things done, use activities and status on tasks.<br/>
+                    Chat in real time or by email to collaborate efficiently.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_web_projects" action="act_web_projects" name="Web Development Projects" parent="project.menu_main_pm"
+            sequence="5"/>
+   	</data>
+</odoo>

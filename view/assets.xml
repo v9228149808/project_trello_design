@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <template id="assets_backend" name="ribbon" inherit_id="web.assets_backend">
+       <xpath expr="." position="inside">
+           <link rel="stylesheet" href="/project_trello_design/static/src/css/kanban_view.css"/>
+       </xpath>
+   </template>
+
+   <template id="project_trello_design_frontend" inherit_id="website.assets_frontend">
+        <xpath expr="link[last()]" position="after">
+            <link rel="stylesheet" type="text/scss" href="/project_trello_design/static/src/css/portal.css"/>
+        </xpath>
+    	<xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/project_trello_design/static/src/js/project_task.js"></script>
+    	</xpath>
+    </template>
+</odoo>
